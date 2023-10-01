@@ -1,17 +1,13 @@
 <?php
 
 namespace App\Entity;
-
 use ApiPlatform\Metadata\ApiResource;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * This is a dummy entity. Remove it!
- */
 #[ApiResource(mercure: true)]
 #[ORM\Entity]
-class Greeting
+class Review
 {
     /**
      * The entity ID
@@ -21,13 +17,20 @@ class Greeting
     #[ORM\GeneratedValue]
     private ?int $id = null;
 
-    /**
-     * A nice person
-     */
-    #[ORM\Column]
-    #[Assert\NotBlank]
-    public string $name = '';
+    /** The rating of this review (between 0 and 5). */
+    #[ORM\Column(type: 'smallint')]
+    #[Assert\Range(min: 0, max: 10)]
+    public int $rating = 0;
 
+    /** The body of the review. */
+    #[ORM\Column(type: 'text')]
+    #[Assert\NotBlank]
+    public string $body = '';
+
+
+    /** The related car this review is about. */
+    #[ORM\ManyToOne(targetEntity: 'Car', inversedBy: 'reviews')]
+    public ?Car $car = null;
     public function getId(): ?int
     {
         return $this->id;
